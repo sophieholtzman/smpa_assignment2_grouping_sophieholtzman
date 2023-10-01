@@ -61,11 +61,11 @@ Take a moment to look at the various categories included for each disbursement.
 
 Without doing any analysis yet, what are three questions you might try to answer using this dataset? Write your narrative answers in the spaces below.
 
-1.  
+1.  Who/what received the majority of the disbursements?
 
-2.  
+2.  In which cities or states were most of the recipients located?
 
-3.  
+3.  How much was each disbursement? 
 
 ## Coding Assignment Questions
 
@@ -78,10 +78,15 @@ Without doing any analysis yet, what are three questions you might try to answer
 <br>
 
 How much was spent in the 2017 vs. 2018 reporting year?
+#Using the group_by command, I grouped by year and summarized the total disbursement amounts spent each year. 
 
 ```{r}
 
 
+
+payments %>% 
+  group_by(report_year) %>% 
+  summarise(total_spent = sum(disbursement_amount))
 
 
 
@@ -90,23 +95,34 @@ How much was spent in the 2017 vs. 2018 reporting year?
 ```
 
 Tally the total overall disbursement amounts for each month (distinguishing between say, Oct. 2018 v. Oct. 2019). In which month was spending the highest?
-
+#Using the group_by function, I grouped by year and month to separate the data by month. Using summarise, I was able to get the sum of the amounts for each month and arrange them in descending order in order to find which month spending was the highest in. Spending was the highest in October 2018.
 ```{r}
 
 
 
+payments %>% 
+  group_by(disbursement_year, disbursement_month) %>% 
+  summarise(total_spent = sum(disbursement_amount)) %>% 
+  arrange(desc(total_spent))
 
 
 
 ```
 
 Which recipient (recipient_name) was paid the most in the 2020 election cycle?
-
+#American Made Media Consultants was paid the most in the 2020 election cycle. I found this by grouping by the recipient name and summarising the sum of each recipient's total disbursement amount. I then arranged this in descending order.
 ```{r}
 
 
+payments %>% 
+  group_by(recipient_name) %>% 
+  summarise(total_spent = sum(disbursement_amount)) %>% 
+  arrange(desc(total_spent))
 
 
+
+  git config --global user.email "sophieholtz@gwu.edu"
+  git config --global user.name "Sophie Holtzman"
 
 
 
@@ -116,7 +132,11 @@ Look at what this recipient was paid for. What service or good (see the "disburs
 
 ```{r}
 
-
+payments %>% 
+  filter(recipient_name == "AMERICAN MADE MEDIA CONSULTANTS, LLC") %>% 
+  group_by(recipient_state) %>% 
+  summarise(total_spent = sum(disbursement_amount)) %>% 
+  arrange(desc(total_spent))
 
 
 
@@ -128,7 +148,10 @@ What's the most common category overall (see "disbursement_description") the cam
 ```{r}
 
 
-
+payments %>% 
+  group_by(disbursement_description) %>% 
+  summarise(total_spent = sum(disbursement_amount)) %>% 
+  arrange(desc(total_spent))
 
 
 
@@ -139,6 +162,12 @@ Who were the 5 biggest recipients of campaign spending on "LEGAL CONSULTING"..?
 ```{r}
 
 
+payments %>% 
+  filter(disbursement_description == "LEGAL CONSULTING") %>% 
+  group_by(recipient_name) %>% 
+  summarise(total_spent = sum(disbursement_amount)) %>% 
+  arrange(desc(total_spent)) %>% 
+  head(5)
 
 
 
@@ -152,6 +181,12 @@ Who are the top 5 individuals (vs. organization) were paid by the campaign commi
 ```{r}
 
 
+payments %>% 
+  filter(entity_type == "IND") %>% 
+  group_by(recipient_name) %>% 
+  summarise(total_spent = sum(disbursement_amount)) %>% 
+  arrange(desc(total_spent)) %>% 
+  head(5)
 
 
 
@@ -165,6 +200,15 @@ For the indvidual who was paid the most, which payment category (disbursement_de
 ```{r}
 
 
+payments_glassner <- payments %>% 
+  filter(recipient_name == "GLASSNER, MICHAEL") 
+  
+payments_glassner_groupbydescription <- payments_glassner %>% 
+  group_by(disbursement_description) %>%
+  summarise(total = sum(disbursement_amount)) 
+
+payments_glassner_groupbydescription %>% 
+  arrange(desc(total))
 
 
 
