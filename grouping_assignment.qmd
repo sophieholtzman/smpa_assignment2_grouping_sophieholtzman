@@ -110,7 +110,7 @@ payments %>%
 ```
 
 Which recipient (recipient_name) was paid the most in the 2020 election cycle?
-#American Made Media Consultants was paid the most in the 2020 election cycle. I found this by grouping by the recipient name and summarising the sum of each recipient's total disbursement amount. I then arranged this in descending order.
+#American Made Media Consultants was paid the most in the 2020 election cycle. Using group_by, I found the sum of each recipient's total disbursement amount and arranged it in descending order.
 ```{r}
 
 
@@ -121,20 +121,19 @@ payments %>%
 
 
 
-  git config --global user.email "sophieholtz@gwu.edu"
-  git config --global user.name "Sophie Holtzman"
+  
 
 
 
 ```
 
 Look at what this recipient was paid for. What service or good (see the "disbursement_description") were they paid the most for?
-
+#They were paid the most for placed media. I found this by filtering for the recipient name and grouping by the disbursement description in descending order based on total amount spent.
 ```{r}
 
 payments %>% 
   filter(recipient_name == "AMERICAN MADE MEDIA CONSULTANTS, LLC") %>% 
-  group_by(recipient_state) %>% 
+  group_by(disbursement_description) %>% 
   summarise(total_spent = sum(disbursement_amount)) %>% 
   arrange(desc(total_spent))
 
@@ -144,7 +143,7 @@ payments %>%
 ```
 
 What's the most common category overall (see "disbursement_description") the campaign spent money on?
-
+#After grouping by the disbursement description to categorize by where the disbursements were going, I arranged the categories in order of which category received the most spending.
 ```{r}
 
 
@@ -158,6 +157,7 @@ payments %>%
 ```
 
 Who were the 5 biggest recipients of campaign spending on "LEGAL CONSULTING"..?
+#I arranged in descending order by how much money went to each legal consulting recipient. The 5 biggest recipients were 1. Jones Day, 2. Larocca Hornik Rosen Greenberg & Blaha LLP, 3. Kasowitz, Benson, Torress, & Friedman, 4. The Law Offices of Alan S. Futerfas, and 5. McDermott Will & Emery.
 
 ```{r}
 
@@ -166,8 +166,7 @@ payments %>%
   filter(disbursement_description == "LEGAL CONSULTING") %>% 
   group_by(recipient_name) %>% 
   summarise(total_spent = sum(disbursement_amount)) %>% 
-  arrange(desc(total_spent)) %>% 
-  head(5)
+  arrange(desc(total_spent))
 
 
 
@@ -177,6 +176,7 @@ payments %>%
 
 
 Who are the top 5 individuals (vs. organization) were paid by the campaign committee?
+#I arranged in descending order by the amount of money that went to each individual after filtering by individual. The top 5 were GLASSNER MICHAEL, DOLLMAN SEAN, CENTINELLO DARREN, CARR CHRISTOPHER, and PENCE JOHN.
 
 ```{r}
 
@@ -185,8 +185,7 @@ payments %>%
   filter(entity_type == "IND") %>% 
   group_by(recipient_name) %>% 
   summarise(total_spent = sum(disbursement_amount)) %>% 
-  arrange(desc(total_spent)) %>% 
-  head(5)
+  arrange(desc(total_spent))
 
 
 
@@ -196,20 +195,17 @@ payments %>%
 
 
 For the indvidual who was paid the most, which payment category (disbursement_description) was the top one for him or her? And how much money were they paid in that category?
+#I filtered by recipient name and grouped by the disbursement description to find the category with the highest total amount. I then arranged the amounts in descending order. In the payroll category, $499,000 was paid. 
 
 ```{r}
 
 
-payments_glassner <- payments %>% 
-  filter(recipient_name == "GLASSNER, MICHAEL") 
-  
-payments_glassner_groupbydescription <- payments_glassner %>% 
+payments %>% 
+  filter(recipient_name == "GLASSNER, MICHAEL") %>%
   group_by(disbursement_description) %>%
-  summarise(total = sum(disbursement_amount)) 
-
-payments_glassner_groupbydescription %>% 
+  summarise(total = sum(disbursement_amount)) %>%
   arrange(desc(total))
-
+  
 
 
 
